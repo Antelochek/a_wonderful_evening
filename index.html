@@ -228,7 +228,7 @@
 <!-- Экран 3: комплимент -->
 <div id="compliment">
   <img src="kitty.gif" alt="котик" class="emoji-img">
-  <h1 id="compText">Я буду ждать нашей встречи 💖</h1>
+  <h1 id="compText">Я буду ждать нашей встречи </h1>
   <p>Что бы вновь увидеть тебя ✨</p>
 
   <a id="goBtn" class="go-btn" href="#" target="_blank" rel="noopener">
@@ -316,7 +316,7 @@
     const human = d.toLocaleString('ru-RU', {
       day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit'
     });
-    const msg = encodeURIComponent(`Привет! Я согласна 💖 Давай встретимся: ${human}`);
+    const msg = encodeURIComponent(`Привет! Я согласна. Давай встретимся: ${human}`);
     const sep = CONTACT_URL.includes('?') ? '&' : '?';
     goBtn.href = `${CONTACT_URL}${sep}text=${msg}`;
     goBtn.removeAttribute('disabled');
@@ -393,7 +393,7 @@ nextBtn.addEventListener('click', () => {
   const human = d.toLocaleString('ru-RU', {
     day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit'
   });
-  const msg = encodeURIComponent(`Привет! Я согласна 💖 Давай встретимся: ${human}`);
+  const msg = encodeURIComponent(`Привет! Я согласна. Давай встретимся: ${human}`);
   const sep = CONTACT_URL.includes('?') ? '&' : '?';
   goBtn.href = `${CONTACT_URL}${sep}text=${msg}`;
 });
