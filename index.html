@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#ffd1e8">
+<title>Один вопрос 💌</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  html, body {
+    min-height: 100%;
+    height: 100%;
+  }
+
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: linear-gradient(135deg, #ffe0ec, #ffd1e8, #e0d4ff);
+    background-size: 200% 200%;
+    animation: bg 12s ease infinite;
+    overflow: hidden;
+    padding: 16px;
+    padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
+  }
+
+  @keyframes bg {
+    0%,100% { background-position: 0% 50%; }
+    50%     { background-position: 100% 50%; }
+  }
+
+  .card {
+    background: rgba(255,255,255,0.88);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 28px;
+    padding: 40px 26px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(200,120,160,0.25);
+    max-width: 480px;
+    width: 100%;
+    max-height: 100%;
+    overflow-y: auto;
+    position: relative;
+    z-index: 2;
+  }
+
+  .emoji { font-size: 52px; margin-bottom: 14px; display: block; }
+
+  h1 {
+    font-size: 24px;
+    color: #4a2c40;
+    margin-bottom: 10px;
+    line-height: 1.3;
+  }
+
+  p.sub {
+    color: #8a6a7d;
+    font-size: 15px;
+    margin-bottom: 28px;
+  }
+
+  .buttons {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+    position: relative;
+    min-height: 56px;
+  }
+  .emoji-img {
+  width: 140px;
+  height: 140px;
+  object-fit: contain;
+  margin: 0 auto 14px;
+  display: block;
+  border-radius: 16px; /* если хочешь скруглённые углы, иначе убери */
+}
+
+  button {
+    border: none;
+    padding: 16px 36px;
+    font-size: 18px;
+    font-weight: 600;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s, font-size 0.2s, opacity 0.2s;
+    font-family: inherit;
+    touch-action: manipulation;
+  }
+
+  #yes {
+    background: linear-gradient(135deg, #ff5c8a, #ff2d6f);
+    color: #fff;
+    box-shadow: 0 10px 24px rgba(255,45,111,0.4);
+  }
+  #yes:active { transform: scale(0.97); }
+
+  #no {
+    background: #f0e6ec;
+    color: #8a6a7d;
+    position: relative;
+    will-change: transform;
+  }
+
+  /* Финальный экран */
+  #final {
+    display: none;
+    text-align: center;
+  }
+  #final .big { font-size: 64px; margin-bottom: 12px; }
+  #final h1 { font-size: 26px; }
+  #final p { color: #8a6a7d; margin-top: 10px; font-size: 15px; }
+
+  .date-block {
+    margin-top: 24px;
+    text-align: left;
+  }
+  .date-block label {
+    display: block;
+    font-size: 14px;
+    color: #8a6a7d;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  .date-block input {
+    width: 100%;
+    padding: 14px 16px;
+    font-size: 16px; /* >=16px, иначе iOS зумит */
+    border: 2px solid #f0d6e2;
+    border-radius: 16px;
+    background: #fff;
+    color: #4a2c40;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .date-block input:focus { border-color: #ff5c8a; }
+
+  .go-btn {
+    display: block;
+    width: 100%;
+    margin-top: 20px;
+    padding: 16px 24px;
+    background: linear-gradient(135deg, #ff5c8a, #ff2d6f);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 17px;
+    text-align: center;
+    border: none;
+    box-shadow: 0 10px 24px rgba(255,45,111,0.4);
+    cursor: pointer;
+    font-family: inherit;
+    transition: transform 0.15s, opacity 0.2s;
+  }
+  .go-btn:active { transform: scale(0.97); }
+  .go-btn[disabled] { opacity: 0.45; pointer-events: none; box-shadow: none; }
+
+  .heart {
+    position: fixed;
+    font-size: 22px;
+    pointer-events: none;
+    animation: floatUp 4s ease-in forwards;
+    z-index: 1;
+  }
+  @keyframes floatUp {
+    0%   { opacity: 1; transform: translateY(0) scale(1); }
+    100% { opacity: 0; transform: translateY(-200px) scale(1.6); }
+  }
+
+  /* Мелкие экраны */
+  @media (max-width: 380px) {
+    .card { padding: 32px 20px; border-radius: 22px; }
+    h1 { font-size: 21px; }
+    .emoji { font-size: 44px; }
+    button { padding: 14px 28px; font-size: 17px; }
+    #final h1 { font-size: 22px; }
+    #final .big { font-size: 54px; }
+  }
+
+  /* Низкие экраны (ландшафт на телефоне) */
+  @media (max-height: 560px) {
+    .card { padding: 24px 22px; }
+    .emoji { font-size: 36px; margin-bottom: 8px; }
+    h1 { font-size: 20px; }
+    p.sub { margin-bottom: 18px; }
+    .date-block { margin-top: 16px; }
+  }
+  #compliment {
+  display: none;
+  text-align: center;
+}
+#compliment h1 { font-size: 26px; margin-bottom: 10px; }
+#compliment p  { color: #8a6a7d; margin-bottom: 24px; font-size: 15px; }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div id="question">
+  <img src="cat.gif" alt="котик" class="emoji-img">
+  <h1>Приветик, не хочешь снова погулять? Я хочу пригласить тебя на свидание</h1>
+    <p class="sub">Будет вкусно и весело </p>
+    <div class="buttons">
+      <button id="yes">Да 💖</button>
+      <button id="no">Нет</button>
+    </div>
+  </div>
+
+  <!-- Экран 2: выбор даты -->
+<div id="final">
+    <img src="falling-stars-cutecore.gif" alt="котик" class="emoji-img">
+  <h1>Всего лишь 2 буквы, но как они меня делают счасливым</h1>
+  <p>Осталось выбрать, когда 😊</p>
+
+  <div class="date-block">
+    <label for="when">Когда тебе удобно?</label>
+    <input type="datetime-local" id="when">
+  </div>
+
+  <button id="nextBtn" class="go-btn" disabled>Дальше 💫</button>
+</div>
+
+<!-- Экран 3: комплимент -->
+<div id="compliment">
+  <img src="kitty.gif" alt="котик" class="emoji-img">
+  <h1 id="compText">Я буду ждать нашей встречи 💖</h1>
+  <p>Что бы вновь увидеть тебя ✨</p>
+
+  <a id="goBtn" class="go-btn" href="#" target="_blank" rel="noopener">
+    Написать мне 💌
+  </a>
+</div>
+
+<script>
+  const noBtn    = document.getElementById('no');
+  const yesBtn   = document.getElementById('yes');
+  const question = document.getElementById('question');
+  const final    = document.getElementById('final');
+  const whenInp  = document.getElementById('when');
+  const goBtn    = document.getElementById('goBtn');
+
+  // 👇 ЗАМЕНИ НА СВОЙ КОНТАКТ
+  const CONTACT_URL = 'https://max.ru/u/f9LHodD0cOKD9KP4RLrF68h3mf_FB7KHIKrXldYi8GXLVHHopUQF4rb5PN0';
+
+  const noTexts = ['Нет', 'Точно нет?', 'Подумай ещё 🤔', 'Уверена?', 'Последний шанс…', 'Ну пожалуйста 🥺'];
+  let noCount = 0;
+
+  // ——— Убегающая «Нет» ———
+  // На десктопе — при наведении
+  noBtn.addEventListener('mouseenter', () => { moveNo(); });
+  // На телефоне — при касании пальцем (до клика)
+  noBtn.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    moveNo();
+  }, { passive: false });
+  // Фолбэк: если всё же кликнули
+  noBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    moveNo();
+  });
+
+  function moveNo() {
+    const isMobile = window.matchMedia('(max-width: 600px)').matches;
+    // На телефоне двигаем по всему экрану относительно текущей позиции
+    const rangeX = isMobile ? 120 : 130;
+    const rangeY = isMobile ? 100 : 80;
+    const x = (Math.random() - 0.5) * rangeX * 2;
+    const y = (Math.random() - 0.5) * rangeY * 2;
+
+    noBtn.style.transform = `translate(${x}px, ${y}px)`;
+
+    noCount++;
+    noBtn.textContent = noTexts[Math.min(noCount, noTexts.length - 1)];
+
+    // Уменьшаем и «исчезаем»
+    const scale = Math.max(0.5, 1 - noCount * 0.12);
+    noBtn.style.fontSize = (18 * scale) + 'px';
+    noBtn.style.opacity = Math.max(0.3, 1 - noCount * 0.15);
+  }
+
+  // ——— Кнопка «Да» ———
+  yesBtn.addEventListener('click', () => {
+    question.style.display = 'none';
+    final.style.display = 'block';
+    burstHearts();
+
+    // Ставим минимальную дату = сейчас, и дефолт = сегодня вечером
+    const now = new Date();
+    const pad = n => String(n).padStart(2, '0');
+    const toLocal = d =>
+      `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+
+    whenInp.min = toLocal(now);
+
+    const def = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+    def.setHours(19, 0, 0, 0);
+    whenInp.value = toLocal(def);
+
+    updateGoBtn();
+  });
+
+  // ——— Календарь → ссылка с датой ———
+  function updateGoBtn() {
+    const val = whenInp.value;
+    if (!val) {
+      goBtn.setAttribute('disabled', '');
+      goBtn.textContent = 'Сначала выбери дату';
+      return;
+    }
+    const d = new Date(val);
+    const human = d.toLocaleString('ru-RU', {
+      day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit'
+    });
+    const msg = encodeURIComponent(`Привет! Я согласна 💖 Давай встретимся: ${human}`);
+    const sep = CONTACT_URL.includes('?') ? '&' : '?';
+    goBtn.href = `${CONTACT_URL}${sep}text=${msg}`;
+    goBtn.removeAttribute('disabled');
+    goBtn.textContent = 'Написать мне 💌';
+  }
+
+  whenInp.addEventListener('change', updateGoBtn);
+  whenInp.addEventListener('input', updateGoBtn);
+
+  // ——— Сердечки-конфетти ———
+  function burstHearts() {
+    const emojis = ['💖','💕','🌸','✨','💗','🌷'];
+    for (let i = 0; i < 60; i++) {
+      setTimeout(() => {
+        const h = document.createElement('div');
+        h.className = 'heart';
+        h.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        h.style.left = Math.random() * 100 + 'vw';
+        h.style.top  = (70 + Math.random() * 30) + 'vh';
+        h.style.fontSize = (18 + Math.random() * 22) + 'px';
+        document.body.appendChild(h);
+        setTimeout(() => h.remove(), 4000);
+      }, i * 60);
+    }
+  }
+  const nextBtn    = document.getElementById('nextBtn');
+const compliment = document.getElementById('compliment');
+const compText   = document.getElementById('compText');
+
+
+// Кнопка «Да»
+yesBtn.addEventListener('click', () => {
+  question.style.display = 'none';
+  final.style.display = 'block';
+  burstHearts();
+
+  const now = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  const toLocal = d =>
+    `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+
+  whenInp.min = toLocal(now);
+
+  const def = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+  def.setHours(19, 0, 0, 0);
+  whenInp.value = toLocal(def);
+
+  updateNextBtn();
+});
+
+// Календарь → активируем «Дальше»
+function updateNextBtn() {
+  if (whenInp.value) {
+    nextBtn.removeAttribute('disabled');
+    nextBtn.textContent = 'Дальше 💫';
+  } else {
+    nextBtn.setAttribute('disabled', '');
+    nextBtn.textContent = 'Сначала выбери дату';
+  }
+}
+whenInp.addEventListener('change', updateNextBtn);
+whenInp.addEventListener('input', updateNextBtn);
+
+// «Дальше» → экран комплимента
+nextBtn.addEventListener('click', () => {
+  // случайный комплимент
+
+  final.style.display = 'none';
+  compliment.style.display = 'block';
+  burstHearts();
+
+  // ссылка с датой
+  const d = new Date(whenInp.value);
+  const human = d.toLocaleString('ru-RU', {
+    day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit'
+  });
+  const msg = encodeURIComponent(`Привет! Я согласна 💖 Давай встретимся: ${human}`);
+  const sep = CONTACT_URL.includes('?') ? '&' : '?';
+  goBtn.href = `${CONTACT_URL}${sep}text=${msg}`;
+});
+</script>
+</body>
+</html>
